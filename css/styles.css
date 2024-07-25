@@ -1,0 +1,336 @@
+/* Resetting some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0a0a0a;
+    color: #f0f0f0;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #1f1f1f;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav h1 {
+    font-size: 1.5rem;
+    color: #00adb5;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    color: #f0f0f0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #00adb5;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #1f1f1f, #0a0a0a);
+    flex: 1;
+}
+
+.hero .content {
+    max-width: 50%;
+    margin-right: 20px;
+}
+
+.hero .content h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.hero .content h1 {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    color: #00adb5;
+}
+
+.hero .content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.hero .content h3 span {
+    color: #00adb5;
+}
+
+.hero .content p {
+    color: #ccc;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.hero .social-icons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.hero .social-icons a {
+    text-decoration: none;
+    color: #00adb5;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.hero .social-icons a:hover {
+    transform: scale(1.2);
+}
+
+.hero button {
+    background-color: #00adb5;
+    color: #0a0a0a;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero button:hover {
+    background-color: #028a91;
+    transform: scale(1.05);
+}
+
+.hero .image img {
+    max-width: 80%;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* About Section */
+section.about,
+section.skills,
+section.portfolio,
+section.contact {
+    padding: 50px 20px;
+}
+
+.about h2,
+.about h4,
+.skills h2,
+.portfolio h2,
+.contact h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #00adb5;
+}
+
+/* Skills Section *//* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #05161f;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+
+nav h1 {
+    display: inline-block;
+    margin: 0;
+    padding: 0 20px;
+    font-size: 24px;
+}
+
+nav ul {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Skills Section Styles */
+.skills {
+    padding: 50px 0;
+    text-align: center;
+    background-color: #05161f;
+    border-radius: 10px;
+}
+
+.skills h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    padding: 0 20px;
+    justify-items: center;
+}
+
+.skill-item {
+    background: #7adaca;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skill-item img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+}
+
+.skill-item h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.skill-item p {
+    font-size: 1rem;
+    color: #666;
+}
+
+.skill-item:hover {
+    transform: translateY(-10px);
+}
+
+
+/* Portfolio Section */
+.portfolio .projects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.portfolio .project {
+    background: #1f1f1f;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.portfolio .project:hover {
+    transform: scale(1.05);
+}
+
+/* Contact Section */
+.contact form {
+    display: grid;
+    grid-gap: 20px;
+}
+
+.contact form label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #00adb5;
+}
+
+.contact form input,
+.contact form textarea {
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background: #1f1f1f;
+    color: #f0f0f0;
+    font-size: 1rem;
+}
+
+.contact form button {
+    background-color: #00adb5;
+    color: #0a0a0a;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.contact form button:hover {
+    background-color: #028a91;
+    transform: scale(1.05);
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #1f1f1f;
+    color: #777;
+    border-top: 1px solid #333;
+    margin-top: auto;
+}
+
+/* CSS untuk menyesuaikan ukuran gambar dengan tampilan yang lebih keren */
+.hero .image {
+    position: relative;
+    width: 10rem; /* Lebar kontainer gambar */
+    height: 14rem; /* Tinggi kontainer gambar */
+    overflow: hidden;
+    border-radius: 20px; /* Sudut melengkung pada kontainer gambar */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bayangan pada kontainer gambar */
+    transition: transform 0.3s, box-shadow 0.3s; /* Transisi untuk efek hover */
+}
+
+.hero .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Memastikan gambar terisi penuh sesuai dengan ukuran kontainer */
+    transition: transform 0.3s; /* Transisi untuk efek hover pada gambar */
+}
+
+.hero .image:hover {
+    transform: scale(1.02); /* Membesar sedikit saat dihover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Bayangan yang lebih tebal saat dihover */
+}
+
+.hero .image:hover img {
+    transform: scale(1.1); /* Membesar sedikit lebih lanjut saat dihover */
+}
