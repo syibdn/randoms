@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/styles1.css">
+</head>
+<body>
+    <header>
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Undangan Pernikahan</h1>
+                <h2>Syaifuddin & M. Rafi Awandika</h2>
+                <p>12 Desember 2024</p>
+                <a href="#details" class="btn">Lihat Detail</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="details" class="details">
+        <h2>Detail Acara</h2>
+        <p><i class="fas fa-calendar-alt"></i> Tanggal: 12 Desember 2024</p>
+        <p><i class="fas fa-clock"></i> Waktu: 10:00 AM - Selesai</p>
+        <p><i class="fas fa-map-marker-alt"></i> Lokasi: Jl Kauman Barat V no 20</p>
+    </section>
+
+    <section class="story">
+        <h2>Our Story</h2>
+        <p>Cerita singkat tentang perjalanan cinta pengantin.</p>
+    </section>
+
+    <section class="rsvp">
+        <h2>RSVP</h2>
+        <form action="#">
+            <label for="name"><i class="fas fa-user"></i> Nama:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="attendance"><i class="fas fa-check-circle"></i> Kehadiran:</label>
+            <select id="attendance" name="attendance" required>
+                <option value="yes">Ya, saya akan hadir</option>
+                <option value="no">Maaf, saya tidak bisa hadir</option>
+            </select>
+            
+            <button type="submit"><i class="fas fa-paper-plane"></i> Kirim</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Nama Pengantin. All rights reserved.</p>
+    </footer>
+</body>
+</html>
