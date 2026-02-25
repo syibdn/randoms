@@ -11,7 +11,7 @@
       --accent:#0b6b4a;
       --muted:#6b7280;
       --glass: rgba(11,107,74,0.06);
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     }
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,var(--bg),#eef6f2);color:#0f172a}
@@ -21,145 +21,132 @@
     .avatar{width:120px;height:120px;border-radius:12px;background:var(--glass);display:flex;align-items:center;justify-content:center;overflow:hidden}
     .avatar img{width:100%;height:100%;object-fit:cover}
     .hero{flex:1}
-    h1{margin:0;font-size:20px;color:var(--accent)}
+    h1{margin:0;font-size:22px;color:var(--accent)}
     p.role{margin:6px 0;color:var(--muted)}
     .contact{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
     .chip{background:#f1fdf8;border-radius:999px;padding:6px 10px;font-size:13px;color:#044a32;border:1px solid rgba(11,107,74,0.06)}
-
     .grid{display:grid;grid-template-columns:1fr 2fr;gap:20px;padding:20px}
     @media (max-width:760px){.grid{grid-template-columns:1fr}}
-
     aside{padding:12px;border-right:1px dashed #eef2f7}
     section{padding:12px}
-
-    h3{margin:6px 0 12px 0;color:var(--accent);font-size:15px}
+    h3{margin:6px 0 12px 0;color:var(--accent);font-size:16px}
     .info-list{list-style:none;padding:0;margin:0}
     .info-list li{padding:8px 0;border-bottom:1px dashed #f0f4f2}
     .label{display:block;font-size:12px;color:var(--muted)}
     .value{font-weight:600}
-
-    .bio{white-space:pre-wrap;color:#0f172a}
-
-    .table{width:100%;border-collapse:collapse}
-    .table td{padding:8px 6px;border-bottom:1px dashed #f0f4f2}
-
-    .btn{display:inline-block;background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none}
-
+    .bio{white-space:pre-wrap;line-height:1.6}
     footer{padding:16px 24px;background:linear-gradient(90deg,rgba(11,107,74,0.04),transparent);display:flex;justify-content:space-between;align-items:center}
     .tags{display:flex;gap:8px;flex-wrap:wrap}
-
-    /* Print friendly */
-    @media print{
-      body{background:#fff}
-      .container{margin:0;padding:0}
-      .card{box-shadow:none;border-radius:0}
-      footer{display:none}
-      .btn{display:none}
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <header>
-        <div class="avatar">
-          <img src="https://via.placeholder.com/300x300.png?text=Foto" alt="Foto">
-        </div>
-        <div class="hero">
-          <h1>Syaifuddin</h1>
-          <p class="role">28 • Kab. Pekalongan • Islam • (Belum Menikah)</p>
-          <div class="contact">
-            <span class="chip">Kota: Jakarta</span>
-            <span class="chip">Pendidikan: S1</span>
-            <span class="chip">Pekerjaan: IT / Karyawan Swasta</span>
-          </div>
-        </div>
-        <div style="min-width:140px;text-align:right">
-          <a class="btn" href="#" onclick="window.print()">Print / PDF</a>
-          <div style="margin-top:8px;color:var(--muted);font-size:13px">Terakhir diupdate: 2025-07-01</div>
-        </div>
-      </header>
+<div class="container">
+<div class="card">
 
-      <div class="grid">
-        <aside>
-          <section>
-            <h3>Data Pribadi</h3>
-            <ul class="info-list">
-              <li><span class="label">Nama Lahir</span><span class="value">Nama Lengkap</span></li>
-              <li><span class="label">Tempat, Tgl Lahir</span><span class="value">Jakarta, 1 Jan 1990</span></li>
-              <li><span class="label">Kewarganegaraan</span><span class="value">Indonesia</span></li>
-              <li><span class="label">Agama</span><span class="value">Islam</span></li>
-              <li><span class="label">Status</span><span class="value">Belum Menikah</span></li>
-              <li><span class="label">Alamat</span><span class="value">Jl. Contoh No. 1, Jakarta</span></li>
-              <li><span class="label">No. HP</span><span class="value">0812-xxxx-xxxx</span></li>
-              <li><span class="label">Email</span><span class="value">nama@email.com</span></li>
-            </ul>
-          </section>
-
-          <section style="margin-top:12px">
-            <h3>Family Background</h3>
-            <ul class="info-list">
-              <li><span class="label">Ayah</span><span class="value">Nama Ayah – Pekerjaan</span></li>
-              <li><span class="label">Ibu</span><span class="value">Nama Ibu – Pekerjaan</span></li>
-              <li><span class="label">Jumlah Saudara</span><span class="value">3 (2 lelaki, 1 perempuan)</span></li>
-              <li><span class="label">Alamat Keluarga</span><span class="value">Kota Asal</span></li>
-            </ul>
-          </section>
-
-          <section style="margin-top:12px">
-            <h3>Keagamaan</h3>
-            <ul class="info-list">
-              <li><span class="label">Madzhab / Pengajian</span><span class="value">Salaf / Pengajian rutin</span></li>
-              <li><span class="label">Shalat</span><span class="value">Rutin 5 waktu</span></li>
-              <li><span class="label">Puasa Sunnah</span><span class="value">Senin-Kamis</span></li>
-              <li><span class="label">Hobi Keagamaan</span><span class="value">Mengaji, kajian</span></li>
-            </ul>
-          </section>
-
-        </aside>
-
-        <section>
-          <h3>Profil Singkat</h3>
-          <p class="bio">Saya adalah pria/wanita yang bertanggung jawab, memiliki latar belakang pendidikan S1 di bidang ... Saat ini bekerja sebagai ... Saya mencari pasangan yang serius untuk menikah, yang sejalan dalam nilai, visi keluarga, dan komitmen beribadah. Saya siap taaruf dengan proses yang baik dan terbuka.</p>
-
-          <h3>Pendidikan & Karier</h3>
-          <table class="table">
-            <tr><td style="width:30%"><strong>Pendidikan</strong></td><td>S1 Universitas Contoh (2010-2014) - Jurusan</td></tr>
-            <tr><td><strong>Pekerjaan</strong></td><td>Nama Perusahaan – Posisi (2018–Sekarang)</td></tr>
-            <tr><td><strong>Pengalaman</strong></td><td>Deskripsi singkat pengalaman kerja yang relevan</td></tr>
-            <tr><td><strong>Gaji</strong></td><td>Rp X.xxx.xxx / bulan (opsional)</td></tr>
-          </table>
-
-          <h3>Kepribadian & Preferensi</h3>
-          <ul>
-            <li>Karakter: Sabar, tanggung jawab, setia, komunikatif.</li>
-            <li>Hobi: Olahraga, membaca, memasak.</li>
-            <li>Preferensi pasangan: Shalihah/Shalih, usian 22-30, pendidikan minimal D3/S1.</li>
-            <li>Harapan pernikahan: Menikah secara syar'i, mendidik anak, hidup sederhana namun berkah.</li>
-          </ul>
-
-          <h3>Informasi Tambahan</h3>
-          <ul>
-            <li>Riwayat kesehatan: Sehat, tanpa riwayat penyakit kronis.</li>
-            <li>Bahasa: Indonesia (aktif), Inggris (dasar).</li>
-            <li>Bersedia tinggal di: Kota X / atau mengikuti pasangan.</li>
-          </ul>
-
-          <h3 id="contact">Kontak & Proses Taaruf</h3>
-          <p>Jika berminat, hubungi via WhatsApp: <strong>0812-xxxx-xxxx</strong> atau email: <strong>nama@email.com</strong>. Proses taaruf dilakukan dengan perantara keluarga/mahram, diskusi wali, dan akad jika cocok.</p>
-
-        </section>
-      </div>
-
-      <footer>
-        <div>CV Taaruf • Nama Anda</div>
-        <div class="tags">
-          <span class="chip">Serius Menikah</span>
-          <span class="chip">Berakhlak</span>
-          <span class="chip">Bertanggung Jawab</span>
-        </div>
-      </footer>
+<header>
+  <div class="avatar">
+    <img src="https://via.placeholder.com/300x300.png?text=Foto" alt="Foto">
+  </div>
+  <div class="hero">
+    <h1>Syaifuddin</h1>
+    <p class="role">Lahir: Maret 1997 • Islam • Belum Menikah</p>
+    <div class="contact">
+      <span class="chip">Karyawan Swasta</span>
+      <span class="chip">Penghasilan: Setara UMR Semarang</span>
+      <span class="chip">Kepribadian: Introvert</span>
     </div>
   </div>
+</header>
+
+<div class="grid">
+<aside>
+
+<section>
+<h3>Data Pribadi</h3>
+<ul class="info-list">
+<li><span class="label">Nama</span><span class="value">Syaifuddin</span></li>
+<li><span class="label">Tahun Lahir</span><span class="value">Maret 1997</span></li>
+<li><span class="label">Agama</span><span class="value">Islam</span></li>
+<li><span class="label">Status</span><span class="value">Belum Menikah</span></li>
+<li><span class="label">Pekerjaan</span><span class="value">Karyawan Swasta</span></li>
+<li><span class="label">Penghasilan</span><span class="value">Sesuai UMR Semarang</span></li>
+</ul>
+</section>
+
+<section style="margin-top:12px">
+<h3>Kebiasaan & Gaya Hidup</h3>
+<ul class="info-list">
+<li><span class="label">Hobi</span><span class="value">Lari / Jogging</span></li>
+<li><span class="label">Gaya Hidup</span><span class="value">Sederhana & terencana</span></li>
+<li><span class="label">Kebiasaan</span><span class="value">Tidak merokok / Tidak konsumsi hal negatif (edit sesuai kondisi)</span></li>
+</ul>
+</section>
+
+</aside>
+
+<section>
+
+<h3>Profil Singkat</h3>
+<p class="bio">
+Saya adalah pribadi yang cenderung introvert dan lebih nyaman dalam suasana yang tenang. 
+Walaupun tidak mudah bergaul, saya berusaha menjadi pribadi yang setia, konsisten, dan bertanggung jawab dalam setiap amanah.
+
+Saya bekerja sebagai karyawan swasta dengan penghasilan setara UMR Semarang. 
+Saya berusaha hidup sederhana, mengelola keuangan dengan baik, dan mempersiapkan masa depan secara bertahap.
+
+Di waktu luang, saya menjaga kesehatan dengan olahraga lari/jogging sebagai bentuk disiplin diri.
+</p>
+
+<h3>Kelebihan Pribadi</h3>
+<ul>
+<li>InsyaAllah bertanggung jawab dalam pekerjaan.</li>
+<li>Berusaha menjaga komitmen dan tidak mudah menyerah.</li>
+<li>Tidak memiliki kebiasaan buruk (edit sesuai kondisi pribadi).</li>
+<li>Berusaha dekat dan berbakti kepada orang tua.</li>
+<li>Mengutamakan komunikasi yang tenang dan tidak emosional.</li>
+</ul>
+
+<h3>Visi & Tujuan Menikah</h3>
+<p class="bio">
+Saya ingin menikah secara sederhana sesuai syariat. 
+Tujuan saya adalah membangun rumah tangga yang sakinah, saling mendukung dalam kebaikan, dan bersama-sama mengejar keberkahan dalam kehidupan dunia dan akhirat.
+</p>
+
+<h3>Kesiapan Menikah</h3>
+<ul>
+<li>Siap menikah dalam waktu dekat (menyesuaikan kesiapan bersama).</li>
+<li>Berusaha mempersiapkan tabungan pernikahan.</li>
+<li>Sudah memiliki niat serius dan dukungan keluarga (edit sesuai kondisi).</li>
+<li>Siap belajar menjadi suami yang bertanggung jawab dan terus memperbaiki diri.</li>
+</ul>
+
+<h3>Harapan terhadap Calon Istri</h3>
+<ul>
+<li>Memahami dan menjalankan kewajiban sebagai istri dengan baik.</li>
+<li>Memiliki visi membangun keluarga Islami.</li>
+<li>Menjaga adab dan batasan dalam pergaulan sesuai syariat.</li>
+<li>Sederhana dan tidak berlebihan dalam gaya hidup.</li>
+<li>Siap tumbuh dan belajar bersama dalam rumah tangga.</li>
+</ul>
+
+<h3>Proses Taaruf</h3>
+<p>
+Apabila terdapat kecocokan visi dan nilai, proses dapat dilanjutkan secara syar'i melalui perantara keluarga atau wali dengan komunikasi yang jelas dan terhormat.
+</p>
+
+</section>
+</div>
+
+<footer>
+<div>CV Taaruf • Syaifuddin</div>
+<div class="tags">
+<span class="chip">Serius Menikah</span>
+<span class="chip">Keluarga Islami</span>
+<span class="chip">Sederhana & Berkah</span>
+</div>
+</footer>
+
+</div>
+</div>
 </body>
 </html>
