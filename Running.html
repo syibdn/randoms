@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Running Analyzer Smooth</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#050816;
+    color:white;
+    overflow:hidden;
+}
+
+/* ================= LAYOUT ================= */
+
+.container{
+    display:flex;
+    height:100vh;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    width:360px;
+    background:#111827;
+    padding:20px;
+    overflow:auto;
+    border-right:1px solid #1f2937;
+}
+
+h1{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.sub{
+    color:#94a3b8;
+    margin-bottom:20px;
+}
+
+.box{
+    background:#1e293b;
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:20px;
+}
+
+.box h2{
+    margin-bottom:12px;
+    font-size:18px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#0f172a;
+    color:white;
+    margin-bottom:10px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#3b82f6;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:15px;
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.02);
+}
+
+.split-row{
+    display:grid;
+    grid-template-columns:50px 1fr;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.split-row div{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#0f172a;
+    border-radius:8px;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+    flex:1;
+    position:relative;
+    overflow:hidden;
+    padding:30px;
+}
+
+/* ================= HEADER ================= */
+
+.live-header{
+    width:fit-content;
+    margin:auto;
+    background:rgba(0,0,0,.7);
+    padding:16px 30px;
+    border-radius:20px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,.1);
+    margin-bottom:30px;
+}
+
+.timer{
+    font-size:42px;
+    font-weight:bold;
+    color:#00ffcc;
+}
+
+.live-stats{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    margin-top:10px;
+    color:#cbd5e1;
+}
+
+/* ================= TRACK AREA ================= */
+
+.track-area{
+    width:100%;
+    height:320px;
+    position:relative;
+    margin-top:20px;
+}
+
+/* ================= TRACK ================= */
+
+.track{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    height:180px;
+    background:#111827;
+    border-radius:30px;
+    border:6px solid white;
+    overflow:hidden;
+}
+
+/* ================= CENTER LINE ================= */
+
+.center-line{
+    position:absolute;
+    top:50%;
+    left:0;
+    width:100%;
+    height:4px;
+    background:white;
+    transform:translateY(-50%);
+}
+
+/* ================= KM LINES ================= */
+
+.km-line{
+    position:absolute;
+    top:0;
+    width:3px;
+    height:100%;
+    background:#334155;
+}
+
+.km-label{
+    position:absolute;
+    top:-28px;
+    transform:translateX(-50%);
+    color:#94a3b8;
+    font-size:13px;
+}
+
+/* ================= RUNNERS ================= */
+
+.runner{
+    width:60px;
+    height:32px;
+    border-radius:12px;
+    position:absolute;
+    z-index:10;
+    transition:none;
+    box-shadow:0 0 25px rgba(255,255,255,.4);
+}
+
+/* roda kiri */
+.runner::before{
+    content:"";
+    position:absolute;
+    width:14px;
+    height:14px;
+    background:#111;
+    border-radius:50%;
+    bottom:-6px;
+    left:8px;
+}
+
+/* roda kanan */
+.runner::after{
+    content:"";
+    position:absolute;
+    width:14px;
+    height:14px;
+    background:#111;
+    border-radius:50%;
+    bottom:-6px;
+    right:8px;
+}
+
+.runner1{
+    background:#ef4444;
+    top:40px;
+}
+
+.runner2{
+    background:#22c55e;
+    bottom:40px;
+}
+
+/* ================= LEADER ================= */
+
+.leader{
+    margin:auto;
+    margin-top:20px;
+    width:fit-content;
+    background:#111827;
+    padding:14px 24px;
+    border-radius:20px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+/* ================= POPUP ================= */
+
+.popup{
+    position:absolute;
+    left:50%;
+    top:30px;
+    transform:translateX(-50%);
+    background:#0f172a;
+    padding:12px 20px;
+    border-radius:14px;
+    font-size:18px;
+    font-weight:bold;
+    opacity:0;
+    transition:.4s;
+    z-index:50;
+}
+
+.popup.show{
+    opacity:1;
+}
+
+/* ================= CHART ================= */
+
+.chart{
+    width:90%;
+    margin:auto;
+    margin-top:40px;
+    background:#111827;
+    border-radius:20px;
+    padding:20px;
+}
+
+.chart-title{
+    margin-bottom:14px;
+    color:#94a3b8;
+}
+
+.bars{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    height:100px;
+}
+
+.bar{
+    flex:1;
+    border-radius:8px 8px 0 0;
+}
+
+.green{
+    background:#22c55e;
+}
+
+.yellow{
+    background:#eab308;
+}
+
+.red{
+    background:#ef4444;
+}
+
+/* ================= FINISH ================= */
+
+.finish-screen{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.92);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    opacity:0;
+    pointer-events:none;
+    transition:.4s;
+    z-index:100;
+}
+
+.finish-screen.show{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.finish-title{
+    font-size:60px;
+    color:#00ffcc;
+    margin-bottom:20px;
+}
+
+.finish-sub{
+    font-size:30px;
+    text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="sidebar">
+
+        <h1>🏃 Running Analyzer</h1>
+
+        <div class="sub">
+            Smooth Horizontal Animation
+        </div>
+
+        <div class="box">
+
+            <h2>Total KM</h2>
+
+            <input
+                type="number"
+                id="totalKm"
+                value="5"
+            >
+
+            <button onclick="generateInputs()">
+                GENERATE KM
+            </button>
+
+        </div>
+
+        <div class="box">
+
+            <h2>🔴 Kemarin</h2>
+
+            <div id="inputs1"></div>
+
+        </div>
+
+        <div class="box">
+
+            <h2>🟢 Hari Ini</h2>
+
+            <div id="inputs2"></div>
+
+        </div>
+
+        <button onclick="startRace()">
+            START ANALYSIS
+        </button>
+
+    </div>
+
+    <div class="main">
+
+        <div class="live-header">
+
+            <div class="timer" id="timer">
+                00:00
+            </div>
+
+            <div class="live-stats">
+
+                <div id="paceLive">
+                    Pace: -
+                </div>
+
+                <div id="kmLive">
+                    KM: 0
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="track-area">
+
+            <div class="popup" id="popup"></div>
+
+            <div class="track" id="track">
+
+                <div class="center-line"></div>
+
+                <div
+                    class="runner runner1"
+                    id="runner1"
+                ></div>
+
+                <div
+                    class="runner runner2"
+                    id="runner2"
+                ></div>
+
+            </div>
+
+        </div>
+
+        <div class="leader" id="leaderBox">
+            READY TO RUN
+        </div>
+
+        <div class="chart">
+
+            <div class="chart-title">
+                Pace Performance
+            </div>
+
+            <div class="bars" id="bars"></div>
+
+        </div>
+
+        <div
+            class="finish-screen"
+            id="finishScreen"
+        >
+
+            <div class="finish-title">
+                FINISH 🎉
+            </div>
+
+            <div
+                class="finish-sub"
+                id="finishText"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* ================= GENERATE INPUT ================= */
+
+function generateInputs(){
+
+    let total =
+        parseInt(
+            document.getElementById("totalKm").value
+        );
+
+    let c1 =
+        document.getElementById("inputs1");
+
+    let c2 =
+        document.getElementById("inputs2");
+
+    c1.innerHTML = "";
+    c2.innerHTML = "";
+
+    for(let i=1;i<=total;i++){
+
+        c1.innerHTML += `
+            <div class="split-row">
+                <div>${i}</div>
+                <input id="a${i}" value="${(5+Math.random()).toFixed(2)}">
+            </div>
+        `;
+
+        c2.innerHTML += `
+            <div class="split-row">
+                <div>${i}</div>
+                <input id="b${i}" value="${(4.7+Math.random()).toFixed(2)}">
+            </div>
+        `;
+    }
+
+    buildTrack(total);
+}
+
+generateInputs();
+
+/* ================= BUILD TRACK ================= */
+
+function buildTrack(total){
+
+    const track =
+        document.getElementById("track");
+
+    document
+        .querySelectorAll(".km-line,.km-label")
+        .forEach(el=>el.remove());
+
+    const width =
+        track.offsetWidth;
+
+    for(let i=0;i<=total;i++){
+
+        let x =
+            (i / total) * width;
+
+        const line =
+            document.createElement("div");
+
+        line.className = "km-line";
+
+        line.style.left =
+            `${x}px`;
+
+        const label =
+            document.createElement("div");
+
+        label.className = "km-label";
+
+        label.style.left =
+            `${x}px`;
+
+        label.innerText =
+            `KM ${i}`;
+
+        track.appendChild(line);
+        track.appendChild(label);
+    }
+}
+
+/* ================= START ================= */
+
+function startRace(){
+
+    document
+        .getElementById("finishScreen")
+        .classList.remove("show");
+
+    const total =
+        parseInt(
+            document.getElementById("totalKm").value
+        );
+
+    let p1 = [];
+    let p2 = [];
+
+    for(let i=1;i<=total;i++){
+
+        p1.push(
+            parseFloat(
+                document.getElementById(`a${i}`).value
+            )
+        );
+
+        p2.push(
+            parseFloat(
+                document.getElementById(`b${i}`).value
+            )
+        );
+    }
+
+    renderChart(p2);
+
+    animateRace(p1,p2,total);
+}
+
+/* ================= CHART ================= */
+
+function renderChart(data){
+
+    const bars =
+        document.getElementById("bars");
+
+    bars.innerHTML = "";
+
+    const max =
+        Math.max(...data);
+
+    data.forEach(v=>{
+
+        let color = "green";
+
+        if(v > 5.5) color = "red";
+        else if(v > 5) color = "yellow";
+
+        bars.innerHTML += `
+            <div
+                class="bar ${color}"
+                style="
+                    height:${(v/max)*100}px
+                "
+            ></div>
+        `;
+    });
+}
+
+/* ================= SMOOTH ANIMATION ================= */
+
+function animateRace(p1,p2,total){
+
+    const r1 =
+        document.getElementById("runner1");
+
+    const r2 =
+        document.getElementById("runner2");
+
+    const popup =
+        document.getElementById("popup");
+
+    const leader =
+        document.getElementById("leaderBox");
+
+    const timer =
+        document.getElementById("timer");
+
+    const paceLive =
+        document.getElementById("paceLive");
+
+    const kmLive =
+        document.getElementById("kmLive");
+
+    const track =
+        document.getElementById("track");
+
+    const trackWidth =
+        track.offsetWidth - 60;
+
+    let km1 = 0;
+    let km2 = 0;
+
+    let lastPopup = 0;
+
+    let startTime = performance.now();
+
+    let lastFrame = startTime;
+
+    function animate(now){
+
+        const delta =
+            (now - lastFrame) / 1000;
+
+        lastFrame = now;
+
+        const elapsed =
+            (now - startTime) / 1000;
+
+        /* TIMER */
+
+        let min =
+            String(Math.floor(elapsed/60))
+            .padStart(2,"0");
+
+        let sec =
+            String(Math.floor(elapsed%60))
+            .padStart(2,"0");
+
+        timer.innerText =
+            `${min}:${sec}`;
+
+        /* SPEED */
+
+        km1 +=
+            delta /
+            (p1[Math.floor(km1)] || p1[p1.length-1]);
+
+        km2 +=
+            delta /
+            (p2[Math.floor(km2)] || p2[p2.length-1]);
+
+        /* POSITION */
+
+        let x1 =
+            (km1 / total) * trackWidth;
+
+        let x2 =
+            (km2 / total) * trackWidth;
+
+        r1.style.left =
+            `${x1}px`;
+
+        r2.style.left =
+            `${x2}px`;
+
+        /* LIVE INFO */
+
+        paceLive.innerText =
+            `Pace: ${
+                p2[Math.floor(km2)]
+                || p2[p2.length-1]
+            } min/km`;
+
+        kmLive.innerText =
+            `KM: ${Math.min(km2,total).toFixed(2)}`;
+
+        /* LEADER */
+
+        const gap =
+            Math.abs(km2-km1).toFixed(2);
+
+        if(km2 > km1){
+
+            leader.innerHTML =
+                `🟢 Hari Ini Memimpin • +${gap} KM`;
+
+        }else if(km1 > km2){
+
+            leader.innerHTML =
+                `🔴 Kemarin Memimpin • +${gap} KM`;
+
+        }else{
+
+            leader.innerHTML =
+                `⚡ Pace Seimbang`;
+        }
+
+        /* POPUP */
+
+        let currentKm =
+            Math.floor(km2);
+
+        if(
+            currentKm > lastPopup &&
+            currentKm <= total
+        ){
+
+            lastPopup = currentKm;
+
+            popup.innerHTML = `
+                🔥 KM ${currentKm}
+                <br>
+                Pace ${p2[currentKm-1]} min/km
+            `;
+
+            popup.classList.add("show");
+
+            setTimeout(()=>{
+
+                popup.classList.remove("show");
+
+            },1200);
+        }
+
+        /* FINISH */
+
+        if(km1 >= total || km2 >= total){
+
+            let total1 =
+                p1.reduce((a,b)=>a+b,0);
+
+            let total2 =
+                p2.reduce((a,b)=>a+b,0);
+
+            let diff =
+                Math.abs(total1-total2)
+                .toFixed(2);
+
+            let result = "";
+
+            if(total2 < total1){
+
+                result = `
+                    🟢 Hari Ini Lebih Cepat
+                    <br><br>
+                    Improvement:
+                    ${diff} Menit
+                `;
+
+            }else{
+
+                result = `
+                    🔴 Kemarin Lebih Cepat
+                    <br><br>
+                    Selisih:
+                    ${diff} Menit
+                `;
+            }
+
+            document
+                .getElementById("finishText")
+                .innerHTML = `
+                    Total:
+                    ${total2.toFixed(2)} Menit
+                    <br><br>
+                    ${result}
+                `;
+
+            document
+                .getElementById("finishScreen")
+                .classList.add("show");
+
+            return;
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+window.addEventListener("resize",()=>{
+
+    buildTrack(
+        parseInt(
+            document.getElementById("totalKm").value
+        )
+    );
+
+});
+
+</script>
+
+</body>
+</html>
