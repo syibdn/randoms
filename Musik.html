@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Music Spectrum Visualizer</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rotating Circle Spectrum</title>
 
 <style>
 *{
@@ -15,12 +15,12 @@
 body{
     background:#050816;
     overflow:hidden;
-    font-family:Arial, sans-serif;
-    color:white;
+    font-family:Arial,sans-serif;
+    height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    color:white;
 }
 
 .container{
@@ -33,8 +33,6 @@ canvas{
     position:absolute;
     top:0;
     left:0;
-    width:100%;
-    height:100%;
 }
 
 .controls{
@@ -44,26 +42,32 @@ canvas{
     left:50%;
     transform:translateX(-50%);
     background:rgba(255,255,255,0.08);
-    padding:15px 25px;
-    border-radius:15px;
     backdrop-filter:blur(10px);
-    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    padding:15px 25px;
+    border-radius:20px;
     text-align:center;
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
-input[type=file]{
-    color:white;
-    margin-bottom:10px;
-}
-
-h1{
-    margin-bottom:10px;
+.controls h1{
+    margin-bottom:15px;
     font-size:24px;
+}
+
+input{
+    margin:6px 0;
+    color:white;
 }
 
 audio{
     width:300px;
     margin-top:10px;
+}
+
+.info{
+    margin-top:10px;
+    font-size:12px;
+    opacity:0.7;
 }
 </style>
 </head>
@@ -72,10 +76,25 @@ audio{
 <div class="container">
 
     <div class="controls">
-        <h1>🎵 Music Spectrum</h1>
-        <input type="file" id="audioFile" accept="audio/*">
+        <h1>🎵 Rotating Music Spectrum</h1>
+
+        Upload Audio:
         <br>
+        <input type="file" id="audioFile" accept="audio/*">
+
+        <br><br>
+
+        Upload Gambar:
+        <br>
+        <input type="file" id="imageFile" accept="image/*">
+
+        <br>
+
         <audio id="audio" controls></audio>
+
+        <div class="info">
+            Gambar akan berputar mengikuti musik
+        </div>
     </div>
 
     <canvas id="canvas"></canvas>
@@ -83,46 +102,79 @@ audio{
 </div>
 
 <script>
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize',()=>{
+
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
 });
 
 const audio = document.getElementById('audio');
-const fileInput = document.getElementById('audioFile');
+const audioFile = document.getElementById('audioFile');
+const imageFile = document.getElementById('imageFile');
 
 let audioContext;
 let analyser;
-let source;
 let dataArray;
 
-fileInput.addEventListener('change', function() {
+let centerImage = new Image();
+let imageLoaded = false;
+
+let rotation = 0;
+
+// ================= IMAGE =================
+
+imageFile.addEventListener('change', function(){
+
+    const file = this.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        centerImage.src = e.target.result;
+        imageLoaded = true;
+
+    }
+
+    reader.readAsDataURL(file);
+
+});
+
+// ================= AUDIO =================
+
+audioFile.addEventListener('change', function(){
 
     const file = this.files[0];
     if(!file) return;
 
     const url = URL.createObjectURL(file);
+
     audio.src = url;
 
     if(audioContext){
         audioContext.close();
     }
 
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    audioContext = new(window.AudioContext || window.webkitAudioContext)();
 
     analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
+
+    analyser.fftSize = 512;
 
     const bufferLength = analyser.frequencyBinCount;
+
     dataArray = new Uint8Array(bufferLength);
 
-    source = audioContext.createMediaElementSource(audio);
+    const source = audioContext.createMediaElementSource(audio);
 
     source.connect(analyser);
     analyser.connect(audioContext.destination);
@@ -130,43 +182,149 @@ fileInput.addEventListener('change', function() {
     audio.play();
 
     animate();
+
 });
 
+// ================= ANIMATION =================
+
 function animate(){
+
     requestAnimationFrame(animate);
+
+    if(!analyser) return;
 
     analyser.getByteFrequencyData(dataArray);
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    const barWidth = (canvas.width / dataArray.length) * 2.5;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
 
-    let x = 0;
+    const radius = 140;
 
-    for(let i=0; i<dataArray.length; i++){
+    // ================= ENERGY MUSIC =================
 
-        const barHeight = dataArray[i] * 1.8;
+    let total = 0;
 
-        const red = barHeight + 50;
-        const green = 100;
-        const blue = 255;
+    for(let i=0;i<80;i++){
+        total += dataArray[i];
+    }
 
-        ctx.fillStyle = `rgb(${red},${green},${blue})`;
+    const energy = total / 80;
 
-        ctx.fillRect(
-            x,
-            canvas.height - barHeight,
-            barWidth,
-            barHeight
+    // speed rotation mengikuti musik
+    rotation += 0.002 + (energy / 50000);
+
+    // pulse lingkaran
+    const pulse = 120 + (energy / 12);
+
+    // ================= GLOW =================
+
+    const gradient = ctx.createRadialGradient(
+        cx,cy,50,
+        cx,cy,350
+    );
+
+    gradient.addColorStop(0,"rgba(0,255,255,0.15)");
+    gradient.addColorStop(1,"rgba(0,0,0,0)");
+
+    ctx.fillStyle = gradient;
+
+    ctx.beginPath();
+    ctx.arc(cx,cy,350,0,Math.PI*2);
+    ctx.fill();
+
+    // ================= SPECTRUM =================
+
+    const bars = 180;
+
+    for(let i=0;i<bars;i++){
+
+        const value = dataArray[i];
+
+        const angle = (i / bars) * Math.PI * 2;
+
+        const barHeight = value * 0.8;
+
+        const x1 = cx + Math.cos(angle) * radius;
+        const y1 = cy + Math.sin(angle) * radius;
+
+        const x2 = cx + Math.cos(angle) * (radius + barHeight);
+        const y2 = cy + Math.sin(angle) * (radius + barHeight);
+
+        const hue = i * 2;
+
+        ctx.strokeStyle = `hsl(${hue},100%,60%)`;
+
+        ctx.lineWidth = 4;
+
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = `hsl(${hue},100%,60%)`;
+
+        ctx.beginPath();
+        ctx.moveTo(x1,y1);
+        ctx.lineTo(x2,y2);
+        ctx.stroke();
+
+    }
+
+    // ================= IMAGE ROTATION =================
+
+    ctx.save();
+
+    ctx.translate(cx,cy);
+
+    ctx.rotate(rotation);
+
+    ctx.beginPath();
+    ctx.arc(0,0,pulse,0,Math.PI*2);
+    ctx.closePath();
+    ctx.clip();
+
+    if(imageLoaded){
+
+        ctx.drawImage(
+            centerImage,
+            -pulse,
+            -pulse,
+            pulse * 2,
+            pulse * 2
         );
 
-        // efek glow
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'cyan';
+    }else{
 
-        x += barWidth + 2;
+        ctx.fillStyle = "#111827";
+
+        ctx.beginPath();
+        ctx.arc(0,0,pulse,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+
+        ctx.fillText("UPLOAD",0,-10);
+        ctx.fillText("IMAGE",0,20);
+
     }
+
+    ctx.restore();
+
+    // ================= BORDER =================
+
+    ctx.beginPath();
+    ctx.arc(cx,cy,pulse,0,Math.PI*2);
+
+    ctx.strokeStyle = "cyan";
+    ctx.lineWidth = 5;
+
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "cyan";
+
+    ctx.stroke();
+
 }
+
 </script>
 
 </body>
