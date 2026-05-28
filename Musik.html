@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Spectrum Visualizer</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#050816;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    position:relative;
+    width:100%;
+    height:100%;
+}
+
+canvas{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+
+.controls{
+    position:absolute;
+    z-index:10;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(255,255,255,0.08);
+    padding:15px 25px;
+    border-radius:15px;
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    text-align:center;
+}
+
+input[type=file]{
+    color:white;
+    margin-bottom:10px;
+}
+
+h1{
+    margin-bottom:10px;
+    font-size:24px;
+}
+
+audio{
+    width:300px;
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="controls">
+        <h1>🎵 Music Spectrum</h1>
+        <input type="file" id="audioFile" accept="audio/*">
+        <br>
+        <audio id="audio" controls></audio>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+const audio = document.getElementById('audio');
+const fileInput = document.getElementById('audioFile');
+
+let audioContext;
+let analyser;
+let source;
+let dataArray;
+
+fileInput.addEventListener('change', function() {
+
+    const file = this.files[0];
+    if(!file) return;
+
+    const url = URL.createObjectURL(file);
+    audio.src = url;
+
+    if(audioContext){
+        audioContext.close();
+    }
+
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+
+    const bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+
+    source = audioContext.createMediaElementSource(audio);
+
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+    audio.play();
+
+    animate();
+});
+
+function animate(){
+    requestAnimationFrame(animate);
+
+    analyser.getByteFrequencyData(dataArray);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const barWidth = (canvas.width / dataArray.length) * 2.5;
+
+    let x = 0;
+
+    for(let i=0; i<dataArray.length; i++){
+
+        const barHeight = dataArray[i] * 1.8;
+
+        const red = barHeight + 50;
+        const green = 100;
+        const blue = 255;
+
+        ctx.fillStyle = `rgb(${red},${green},${blue})`;
+
+        ctx.fillRect(
+            x,
+            canvas.height - barHeight,
+            barWidth,
+            barHeight
+        );
+
+        // efek glow
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'cyan';
+
+        x += barWidth + 2;
+    }
+}
+</script>
+
+</body>
+</html>
