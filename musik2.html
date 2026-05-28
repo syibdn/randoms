@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Circle Music Spectrum</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#050816;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+}
+
+.container{
+    position:relative;
+    width:100%;
+    height:100%;
+}
+
+canvas{
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+.controls{
+    position:absolute;
+    z-index:10;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(255,255,255,0.08);
+    padding:15px 25px;
+    border-radius:20px;
+    backdrop-filter:blur(10px);
+    text-align:center;
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+.controls h1{
+    margin-bottom:15px;
+    font-size:24px;
+}
+
+input{
+    margin:5px 0;
+    color:white;
+}
+
+audio{
+    margin-top:10px;
+    width:300px;
+}
+
+.info{
+    font-size:12px;
+    opacity:0.7;
+    margin-top:5px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="controls">
+        <h1>🎵 Circle Spectrum</h1>
+
+        <div>
+            Upload Audio:
+            <br>
+            <input type="file" id="audioFile" accept="audio/*">
+        </div>
+
+        <div style="margin-top:10px;">
+            Upload Gambar:
+            <br>
+            <input type="file" id="imageFile" accept="image/*">
+        </div>
+
+        <audio id="audio" controls></audio>
+
+        <div class="info">
+            Spectrum akan mengikuti lingkaran gambar
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+</div>
+
+<script>
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize',()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+const audio = document.getElementById('audio');
+const audioFile = document.getElementById('audioFile');
+const imageFile = document.getElementById('imageFile');
+
+let audioContext;
+let analyser;
+let dataArray;
+
+let centerImage = new Image();
+let imageLoaded = false;
+
+// upload image
+imageFile.addEventListener('change', function(){
+
+    const file = this.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        centerImage.src = e.target.result;
+        imageLoaded = true;
+    }
+
+    reader.readAsDataURL(file);
+
+});
+
+// upload audio
+audioFile.addEventListener('change', function(){
+
+    const file = this.files[0];
+    if(!file) return;
+
+    const url = URL.createObjectURL(file);
+    audio.src = url;
+
+    if(audioContext){
+        audioContext.close();
+    }
+
+    audioContext = new(window.AudioContext || window.webkitAudioContext)();
+
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 512;
+
+    const bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+
+    const source = audioContext.createMediaElementSource(audio);
+
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+    audio.play();
+
+    animate();
+});
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    if(!analyser) return;
+
+    analyser.getByteFrequencyData(dataArray);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    const radius = 140;
+
+    // background glow
+    const gradient = ctx.createRadialGradient(
+        cx,cy,50,
+        cx,cy,350
+    );
+
+    gradient.addColorStop(0,"rgba(0,255,255,0.15)");
+    gradient.addColorStop(1,"rgba(0,0,0,0)");
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(cx,cy,350,0,Math.PI*2);
+    ctx.fill();
+
+    // draw spectrum
+    const bars = 180;
+
+    for(let i=0;i<bars;i++){
+
+        const value = dataArray[i];
+
+        const angle = (i / bars) * Math.PI * 2;
+
+        const barHeight = value * 0.7;
+
+        const x1 = cx + Math.cos(angle) * radius;
+        const y1 = cy + Math.sin(angle) * radius;
+
+        const x2 = cx + Math.cos(angle) * (radius + barHeight);
+        const y2 = cy + Math.sin(angle) * (radius + barHeight);
+
+        const hue = i * 2;
+
+        ctx.strokeStyle = `hsl(${hue},100%,60%)`;
+        ctx.lineWidth = 4;
+
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = `hsl(${hue},100%,60%)`;
+
+        ctx.beginPath();
+        ctx.moveTo(x1,y1);
+        ctx.lineTo(x2,y2);
+        ctx.stroke();
+    }
+
+    // lingkaran image
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.arc(cx,cy,120,0,Math.PI*2);
+    ctx.closePath();
+    ctx.clip();
+
+    if(imageLoaded){
+
+        ctx.drawImage(
+            centerImage,
+            cx - 120,
+            cy - 120,
+            240,
+            240
+        );
+
+    }else{
+
+        ctx.fillStyle = "#111827";
+        ctx.fillRect(cx-120,cy-120,240,240);
+
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("UPLOAD IMAGE",cx,cy);
+
+    }
+
+    ctx.restore();
+
+    // border lingkaran
+    ctx.beginPath();
+    ctx.arc(cx,cy,120,0,Math.PI*2);
+
+    ctx.strokeStyle = "cyan";
+    ctx.lineWidth = 5;
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "cyan";
+
+    ctx.stroke();
+}
+
+</script>
+
+</body>
+</html>
